@@ -8,20 +8,22 @@
 #define Pi 3.1416
 using namespace std;
 
-// Definición de las funciones f(x, y) y g(x, y)
+
+
+// Definiciï¿½n de las funciones f(x, y) y g(x, y)
 double dxdt(double x, double y) {
-    return y;  // Aquí define tu función f(x, y)
+    return y;  // Aquï¿½ define tu funciï¿½n f(x, y)
 }
 
 double dydt(double x, double y) {
-    return pow(l/(m),2)*pow(1/x,3) +(k/m)*pow(1/x,2)-(b/m)*y;  // Aquí define tu función g(x, y)
+    return pow(l/(m),2)*pow(1/x,3) +(k/m)*pow(1/x,2)-(b/m)*y;  // Aquï¿½ define tu funciï¿½n g(x, y)
 }
 
 double dzdt(double z,double x){
 	return (l/m)*pow(1/x,2);
 }
 
-// Método de Euler para un sistema de ecuaciones diferenciales 2x2
+// Mï¿½todo de Euler para un sistema de ecuaciones diferenciales 2x2
 void euler(double x0, double y0,double z0, double h, double t_final) {
 	ofstream messi; 
 	messi.open("Datos_Ed.dat");
@@ -35,7 +37,7 @@ void euler(double x0, double y0,double z0, double h, double t_final) {
         // Imprime los valores actuales de x, y y t
         messi << t <<"  "<< x <<" "<< z << endl;
 
-        // Calcula los nuevos valores de x e y usando el método de Euler
+        // Calcula los nuevos valores de x e y usando el mï¿½todo de Euler
         double x_nuevo = x + h * dxdt(x, y);
         double y_nuevo = y + h * dydt(x, y);
         double z_nuevo = z + h*dzdt(z,x);
@@ -49,14 +51,14 @@ void euler(double x0, double y0,double z0, double h, double t_final) {
 }
 
 int main() {
-    // Parámetros iniciales
+    // Parï¿½metros iniciales
     double x0 = 1.0;   // Valor inicial de x
     double y0 =0.0;   // Valor inicial de y
     double z0=Pi/2;
-    double h = 0.1;    // Tamaño del paso
+    double h = 0.1;    // Tamaï¿½o del paso
     double t_final = 200.0;  // Tiempo final
 
-    // Llama al método de Euler
+    // Llama al mï¿½todo de Euler
     euler(x0, y0,z0, h, t_final);
 
     return 0;
