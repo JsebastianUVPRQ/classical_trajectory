@@ -30,19 +30,19 @@ def convolucion(img, kernel):
     alto = img.shape[0]
     ancho = img.shape[1]
     
-    altoKernel = kernel.shape[0]
-    anchoKernel = kernel.shape[1]
+    AltoKernel = kernel.shape[0]
+    AnchoKernel = kernel.shape[1]
 
     # bucles
     for x in range(ancho):
         for y in range(alto):
             suma = 0
-            for i in range(altoKernel):
-                for j in range(anchoKernel):
+            for i in range(AltoKernel):
+                for j in range(AnchoKernel):
                     if y + i - 1 >= 0 and x + j - 1 >= 0:
                         try:
                             suma += img[y + i - 1, x + j - 1] * kernel[i, j]
-                        except:
+                        except IndexError:
                             pass
             img[y, x] = suma
     return img
