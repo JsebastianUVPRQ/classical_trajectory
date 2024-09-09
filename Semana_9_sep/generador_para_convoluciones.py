@@ -16,7 +16,7 @@ for each image row in input image:
                     add result to accumulator
                 endif
         set output image pixel to accumulator
-'''      
+'''
 # Ahora traduzcamos este pseudocodigo a python
 
 import numpy as np
