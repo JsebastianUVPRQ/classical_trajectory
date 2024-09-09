@@ -44,8 +44,11 @@ def convolucion(img, kernel):
             img[y, x] = suma
     return img
 
+
 # creemos una imagen de pixeles random para ejemplificar
 imagen_ejemplo = np.random.randint(0, 255, (5, 5))
+
+
 kernel = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
 imagen_procesada = convolucion(imagen_ejemplo, kernel)
 print(imagen_procesada)
