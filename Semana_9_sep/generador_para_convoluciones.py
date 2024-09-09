@@ -24,6 +24,9 @@ import numpy as np
 import cv2
 
 def convolucion(img, kernel):
+    '''
+    This function applies a convolution to an image
+    '''
     alto = img.shape[0]
     ancho = img.shape[1]
     
@@ -49,8 +52,8 @@ def convolucion(img, kernel):
 imagen_ejemplo = np.random.randint(0, 255, (5, 5))
 
 
-kernel = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
-imagen_procesada = convolucion(imagen_ejemplo, kernel)
+kernel_ej = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+imagen_procesada = convolucion(imagen_ejemplo, kernel_ej)
 print(imagen_procesada)
 
 # imagen = cv2.imread('images/imagen.jpg', 0)
