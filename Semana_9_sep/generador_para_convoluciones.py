@@ -13,9 +13,9 @@ for each image row in input image:
                 if element position  corresponding to pixel position then
                     multiply element value  corresponding to pixel value
                     add result to accumulator
-                endif                 
+                endif
         set output image pixel to accumulator
-'''       
+'''      
 # Ahora traduzcamos este pseudocodigo a python
 
 import numpy as np
