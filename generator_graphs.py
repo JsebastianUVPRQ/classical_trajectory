@@ -88,6 +88,8 @@ scale_factor = 1
 ax.quiver(punto[0], punto[1], punto[2], tangente[0], tangente[1], tangente[2], color='blue', label='T', length=scale_factor)
 ax.quiver(punto[0], punto[1], punto[2], normal[0], normal[1], normal[2], color='green', label='N', length=scale_factor)
 ax.quiver(punto[0], punto[1], punto[2], binormal[0], binormal[1], binormal[2], color='purple', label='B', length=scale_factor)
+
+La característica que diferencia a este fragmento de código del anterior es que en este caso se grafica un solo punto en la curva, mientras que en el fragmento anterior se graficaban todos los puntos de la curva. Además, en este caso se grafican los vectores tangente, normal y binormal en el punto especificado.
 '''
 # --------------bucle for para graficar el punto y los vectores tangente, normal y binormal------------
 for i in range(0, len(t_vals)):
