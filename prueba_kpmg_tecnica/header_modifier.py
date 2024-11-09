@@ -2,7 +2,10 @@ import pandas as pd
 import os
 import re
 
+
 class ExcelCleaner:
+    SPECIAL_CHARS_REGEX = r"[^A-Za-z0-9_]"
+    
     def __init__(self, file_path):
         """
         Inicializa la clase con la ruta del archivo Excel.
@@ -17,60 +20,55 @@ class ExcelCleaner:
         self.dataframe = None
 
     def load_excel(self):
-        """Carga el archivo Excel en un DataFrame de pandas sin encabezado."""
+        """Carga el archivo de Excel en un DataFrame"""
         self.dataframe = pd.read_excel(self.file_path, header=None)
-        print(f"Archivo {self.file_path} cargado exitosamente.")
+        self.dataframe.columns = [f"Column_{i}" for i in range(self.dataframe.shape[1])]
+        print("Archivo de Excel cargado correctamente.")
+
 
     def clean_column_names(self):
-        """Limpia los nombres de las columnas del DataFrame según los requisitos."""
-        if self.dataframe is None:
-            raise ValueError("El DataFrame no se ha cargado")
-        
-        # Asignar nombres de columnas genéricos
-        self.dataframe.columns = [f'Column{i+1}' for i in range(self.dataframe.shape[1])]
-        
-        # Realizar la limpieza de nombres de columnas
-        self.dataframe.columns = self.dataframe.columns.str.strip()  # Eliminar espacios al inicio y al final
-        self.dataframe.columns = self.dataframe.columns.str.replace(r'\s+', '_', regex=True)  # Reemplazar espacios intermedios con "_"
-        self.dataframe.columns = self.dataframe.columns.str.replace(r'[^a-zA-Z0-9_]', '_', regex=True) #Eliminar caracteres especiales
+        """Limpia los nombres de las columnas del DataFrame eliminando caracteres especiales y espacios."""
+        self.dataframe.columns = self.dataframe.columns.str.strip()
+        self.dataframe.columns = self.dataframe.columns.str.replace(r"\s+", "_", regex=True)
+        self.dataframe.columns = self.dataframe.columns.str.replace(self.SPECIAL_CHARS_REGEX, "", regex=True)
         print("Nombres de columnas modificados correctamente.")
+
+
+    def clean_values(self):
+        """Limpia los valores en todas las filas del DataFrame eliminando caracteres especiales y espacios."""
+        def clean_value(value):
+            if isinstance(value, str):
+                value = re.sub(r'[^\wÁÉÍÓÚáéíóúñÑ]', '_', value)
+                return value.strip()
+            return value
         
-    def clean_rows(self):
-        """Limpia los valores en todas las filas del DataFrame."""
-        if self.dataframe is None:
-            raise ValueError("El DataFrame no se ha cargado")
-        
-        # Remover espacios en blanco al inicio y al final de cada celda
-        self.dataframe = self.dataframe.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-        
-        # Reemplazar espacios intermedios con ""
-        self.dataframe = self.dataframe.applymap(lambda x: re.sub(r'\s+', '_', x) if isinstance(x, str) else x)
-        
-        # Eliminar caracteres especiales y reemplazarlos con "_"
-        self.dataframe = self.dataframe.applymap(lambda x: re.sub(r'[^a-zA-Z0-9_]', '_', x) if isinstance(x, str) else x)
+        self.dataframe = self.dataframe.applymap(clean_value)
+        print("Valores de filas modificados exitosamente.")
 
     def export_to_csv(self):
-        """Exporta el DataFrame a un archivo CSV en el mismo directorio con nombres de columnas corregidos."""
-        if self.dataframe is None:
-            raise ValueError("El DataFrame no se ha cargado.")
-        
-        # Definir la ruta para el archivo CSV corregido
+        """El resultado de la limpieza se exporta a un archivo CSV
+        de la forma {nombre_archivo}_corregido.csv
+        Se guarda en el mismo directorio del archivo Excel"""
+        # Definir la ruta para guardar el resultado
         output_file = os.path.join(self.directory, f"{self.file_name}_corregido.csv")
         
-        # Exportar a CSV con punto y coma como delimitador y comillas para los valores
+        # Exportar a CSV con punto y coma como delimitador
         self.dataframe.to_csv(output_file, index=False, sep=';', quoting=1)
-        print("Archivo CSV con columnas corregidas guardado.")
 
 
+# Función principal
 if __name__ == "__main__":
-    # Ruta del archivo Excel (esta misma carpeta)
-    ruta_archivo_excel = "Punto 3_ Datos_muestra_prueba_tecnica.xlsx"
+
+    excel_file = "Punto 3_ Datos_muestra_prueba_tecnica.xlsx"
     
-    # Crear instancia de ExcelCleaner
-    cleaner = ExcelCleaner(ruta_archivo_excel)
-    
-    # Ejecutar los métodos para cargar, limpiar y exportar
+    # Crear una instancia de la clase ExcelCleaner
+    cleaner = ExcelCleaner(excel_file)
+
     cleaner.load_excel()
     cleaner.clean_column_names()
-    cleaner.clean_rows()
+    cleaner.clean_values()
     cleaner.export_to_csv()
+    print("Ejecución finalizada. Revisa el archivo CSV corregido.")
+
+
+
