@@ -1,6 +1,6 @@
-import pandas as pd
 import os
 import re
+import pandas as pd
 
 
 class ExcelCleaner:
@@ -9,7 +9,7 @@ class ExcelCleaner:
     def __init__(self, file_path):
         """
         Inicializa la clase con la ruta del archivo Excel.
-        Verifica si el archivo existe y extrae el nombre base y el directorio.
+        Verifica si el archivo existe y extrae el nombre y el directorio.
         """
         if not os.path.isfile(file_path):
             raise FileNotFoundError(f"El archivo {file_path} no se encontró. Verifica la ruta y el nombre.")
@@ -25,7 +25,6 @@ class ExcelCleaner:
         self.dataframe.columns = [f"Column_{i}" for i in range(self.dataframe.shape[1])]
         print("Archivo de Excel cargado correctamente.")
 
-
     def clean_column_names(self):
         """Limpia los nombres de las columnas del DataFrame eliminando caracteres especiales y espacios."""
         self.dataframe.columns = self.dataframe.columns.str.strip()
@@ -33,11 +32,11 @@ class ExcelCleaner:
         self.dataframe.columns = self.dataframe.columns.str.replace(self.SPECIAL_CHARS_REGEX, "", regex=True)
         print("Nombres de columnas modificados correctamente.")
 
-
     def clean_values(self):
-        """Limpia los valores en todas las filas del DataFrame eliminando caracteres especiales y espacios."""
+        """Modifica los strings en todas las filas del DataFrame eliminando caracteres especiales y espacios."""
         def clean_value(value):
             if isinstance(value, str):
+                value = value.strip()
                 value = re.sub(r'[^\wÁÉÍÓÚáéíóúñÑ]', '_', value)
                 return value.strip()
             return value
@@ -53,16 +52,16 @@ class ExcelCleaner:
         output_file = os.path.join(self.directory, f"{self.file_name}_corregido.csv")
         
         # Exportar a CSV con punto y coma como delimitador
-        self.dataframe.to_csv(output_file, index=False, sep=';', quoting=1)
+        self.dataframe.to_csv(output_file, sep=";", index=False)
 
 
 # Función principal
 if __name__ == "__main__":
 
-    excel_file = "Punto 3_ Datos_muestra_prueba_tecnica.xlsx"
+    Excel_file = "Punto 3_ Datos_muestra_prueba_tecnica.xlsx"
     
     # Crear una instancia de la clase ExcelCleaner
-    cleaner = ExcelCleaner(excel_file)
+    cleaner = ExcelCleaner(Excel_file)
 
     cleaner.load_excel()
     cleaner.clean_column_names()
