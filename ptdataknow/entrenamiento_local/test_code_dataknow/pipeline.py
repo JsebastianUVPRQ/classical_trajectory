@@ -4,6 +4,8 @@ from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
 # ------------------------------------------PREPROCESS------------------------------------------
+
+
 class DataPreprocessor:
     def __init__(self, lags=5, train_size=0.7):
         self.lags = lags
@@ -91,3 +93,9 @@ class Pipeline:
             'X_test_scaled': X_test_scaled,
             'y_test': y_test
         }
+        
+# USAR DATAFRAME "Y_modificado.csv"
+df = pd.read_csv('Y_modificado.csv')
+pipeline = Pipeline(lags=5, train_size=0.7)
+result = pipeline.run(df)
+
