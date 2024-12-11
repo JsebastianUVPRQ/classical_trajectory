@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import xgboost as xgb
 from sklearn.metrics import mean_squared_error
@@ -92,10 +93,15 @@ class Pipeline:
             'predictions': futuros,
             'X_test_scaled': X_test_scaled,
             'y_test': y_test
-        }
-        
+        }     
+
+
 # USAR DATAFRAME "Y_modificado.csv"
-df = pd.read_csv('Y_modificado.csv')
+path = os.getcwd()
+dff = pd.read_csv('.\Y_modificado.csv', engine='python')
+
+X_train, y_train, X_test, y_test = DataPreprocessor.split_data(df=dff)
+
 pipeline = Pipeline(lags=5, train_size=0.7)
 result = pipeline.run(df)
 
