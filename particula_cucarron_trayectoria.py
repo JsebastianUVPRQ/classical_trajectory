@@ -1,67 +1,57 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.animation import FuncAnimation, PillowWriter
 
-# Definir constantes
-b = 1.0  # Constante b (puede ajustarse)
-Omega = 1.0  # Constante Omega (puede ajustarse)
-t_max = 2 * np.pi / Omega  # Tiempo máximo para graficar una vuelta completa
-num_points = 1000  # Número de puntos para la gráfica
+# Parámetros
+b = 1.0
+Omega = 1.0
+t_max = 2 * np.pi  # Tiempo total
+num_frames = 200
+t = np.linspace(0, t_max, num_frames)
 
-# Definir el tiempo como un arreglo
-t = np.linspace(0, t_max, num_points)
+# Trayectoria
+x = b * np.exp(Omega * t) * np.cos(Omega * t)
+y = b * np.exp(Omega * t) * np.sin(Omega * t)
+z = np.zeros_like(t)
 
-# Coordenadas polares r y theta
-r = b * np.exp(Omega * t)
-theta = Omega * t
+# Configurar figura 3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+max_xyz = b * np.exp(Omega * t_max) * 1.1
+ax.set_xlim(-max_xyz, max_xyz)
+ax.set_ylim(-max_xyz, max_xyz)
+ax.set_zlim(-1, 1)
 
-# Convertir a coordenadas cartesianas
-x = r * np.cos(theta)
-y = r * np.sin(theta)
+# Elementos del gráfico
+line, = ax.plot([], [], [], lw=1, color='blue')
+point, = ax.plot([], [], [], 'ro', markersize=5)
 
-# Derivadas para calcular velocidad y aceleración
-dr_dt = b * Omega * np.exp(Omega * t)  # dr/dt
-dtheta_dt = Omega  # dtheta/dt
-d2r_dt2 = b * Omega**2 * np.exp(Omega * t)  # d^2r/dt^2
-d2theta_dt2 = 0  # d^2theta/dt^2
+# Inicialización
+def init():
+    line.set_data([], [])
+    line.set_3d_properties([])
+    point.set_data([], [])
+    point.set_3d_properties([])
+    return line, point,
 
-# Componentes radiales y tangenciales de la velocidad
-v_r = dr_dt
-v_theta = r * dtheta_dt
+# Actualización por frame
+def update(frame):
+    x_current = x[:frame+1]
+    y_current = y[:frame+1]
+    z_current = z[:frame+1]
+    line.set_data(x_current, y_current)
+    line.set_3d_properties(z_current)
+    point.set_data([x_current[-1]], [y_current[-1]])
+    point.set_3d_properties([z_current[-1]])
+    return line, point,
 
-# Componentes radiales y tangenciales de la aceleración
-a_r = d2r_dt2 - r * (dtheta_dt)**2
-a_theta = r * d2theta_dt2 + 2 * dr_dt * dtheta_dt
+# Crear animación
+ani = FuncAnimation(fig, update, frames=num_frames, init_func=init, blit=True, interval=50)
 
-# Magnitudes de velocidad y aceleración
-v_magnitude = np.sqrt(v_r**2 + v_theta**2)
-a_magnitude = np.sqrt(a_r**2 + a_theta**2)
-
-# Producto punto entre velocidad y aceleración
-dot_product = v_r * a_r + v_theta * a_theta
-
-# Coseno del ángulo entre velocidad y aceleración
-cos_angle = dot_product / (v_magnitude * a_magnitude)
-
-# Ángulo entre velocidad y aceleración
-angle = np.arccos(cos_angle)
-
-# Verificar que el ángulo es siempre pi/4
-assert np.allclose(angle, np.pi / 4), "El ángulo no es constante o no es pi/4"
-
-# Graficar la trayectoria de la partícula
-plt.figure(figsize=(8, 8))
-plt.plot(x, y, label="Trayectoria de la partícula")
-plt.scatter(x[0], y[0], color='red', label="Posición inicial")  # Posición inicial
-plt.scatter(x[-1], y[-1], color='green', label="Posición final")  # Posición final
-plt.axhline(0, color='black', linewidth=0.5, linestyle='--')
-plt.axvline(0, color='black', linewidth=0.5, linestyle='--')
-plt.xlabel("x")
-plt.ylabel("y")
-plt.title("Trayectoria de la partícula en coordenadas cartesianas")
-plt.legend()
-plt.grid()
-plt.axis('equal')
-plt.show()
-
-# Mostrar el ángulo entre velocidad y aceleración
-print(f"El ángulo entre los vectores velocidad y aceleración es siempre: {np.pi / 4} radianes (45 grados).")
+# Guardar GIF
+ani.save('3d_trajectory.gif', writer=PillowWriter(fps=20))
+plt.close()
