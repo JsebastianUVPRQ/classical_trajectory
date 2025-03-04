@@ -49,6 +49,7 @@ def update(frame):
     point.set_3d_properties([z_current[-1]])
     return line, point,
 
+
 # Crear animación
 ani = FuncAnimation(fig, update, frames=num_frames, init_func=init, blit=True, interval=50)
 
