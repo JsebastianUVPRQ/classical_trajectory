@@ -112,7 +112,6 @@ for i in range(0, len(t_vals)):
     # Configurar el aspecto de la gráfica
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
     ax.legend()
     #guardar la imagen usando plt.savefig y os
     plt.savefig(os.path.join('graphs_gif', f'frame_{i}.png'))
